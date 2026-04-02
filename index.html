@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>面相 MianXiang Face Reader</title>
+  <title>面相 MianXiang Reader</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -420,7 +420,7 @@
   <div class="loading" id="loading">
     <div class="loading-spinner"></div>
     <div class="loading-text">Consulting the ancient masters…</div>
-    <div class="loading-subtext">Reading facial features…</div>
+    <div class="loading-subtext">Reading bones and surface features</div>
   </div>
 
   <div class="result" id="result">
@@ -555,11 +555,13 @@
       const base64 = await toBase64(selectedFile);
       const prompt = buildPrompt();
 
-      const res = await fetch('https://billowing-voice-e40bmianxiang-proxy.danny-679.workers.dev', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
           model: 'claude-3-5-sonnet-20241022',
@@ -618,7 +620,7 @@
   }
 
   function buildPrompt() {
-    return 'You are a fun and insightful Chinese face reading (MianXiang 面相) master. Analyze the face in this photo and give a light-hearted, engaging reading that is easy to understand. Keep it casual, warm, and fun — like a wise friend sharing observations over tea.\n\nStructure your response EXACTLY like this:\n\n## First Impressions\nWrite 1 casual, engaging paragraph about the overall energy and vibe of this face. What kind of person does this look like? Keep it warm and fun.\n\n## What Your Face Reveals\nWrite 1 paragraph covering the most interesting and notable features — eyes, nose, forehead, jaw — and what they suggest about personality, luck, and life path. Keep it light and positive.\n\n## Your Face Reading Summary\nA simple table with exactly these 5 rows:\n| Feature | Reading |\n|---|---|\n| Wealth Luck | one line |\n| Career | one line |\n| Relationships | one line |\n| Personality | one line |\n| Later Life | one line |\n\n## Your Archetype\nOne line naming their classical face archetype e.g. "The Commander 将星格" with a one-sentence fun description.\n\nKeep the whole reading SHORT, fun, and upbeat. No lengthy academic explanations. Think horoscope energy but grounded in real MianXiang principles.';
+    return 'You are a fun and insightful Chinese face reading (MianXiang 面相) master. Analyze the face in this photo and give a light-hearted, engaging reading that is easy to understand. Keep it casual, warm, and fun — like a wise friend sharing observations over tea.\n\nStructure your response EXACTLY like this:\n\n## First Impressions\nWrite 1 casual, engaging paragraph about the overall energy and vibe of this face. What kind of person does this look like? Keep it warm and fun.\n\n## What Your Face Reveals\nWrite 1 paragraph covering the most interesting and notable features — eyes, nose, forehead, jaw — and what they suggest about personality, luck, and life path. Keep it light and positive.\n\n## Your Face Reading Summary\n| Feature | Reading |\n|---|---|\n| Wealth Luck | one line |\n| Career | one line |\n| Relationships | one line |\n| Personality | one line |\n| Later Life | one line |\n\n## Your Archetype\nOne line naming their classical face archetype e.g. The Commander 将星格 with a one-sentence fun description.\n\nKeep it SHORT, fun, and upbeat. Think horoscope energy but grounded in real MianXiang principles.';
   }
 
   function mdToHTML(t) {
