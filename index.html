@@ -3,24 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>面相 MianXiang Reader</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <title>面相 — Face Reader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #1a0a00;
-      --red: #c0392b;
-      --gold: #c9922a;
-      --gold-light: #e8c060;
-      --paper: #f5efe0;
-      --paper-dark: #ede3cc;
+      --bg: #f0f4ff;
+      --blue: #3d6fd4;
+      --blue-deep: #1a3fa0;
+      --blue-light: #e8eeff;
+      --blue-mid: #5b8dee;
+      --gold: #f0b429;
+      --gold-light: #ffd966;
+      --gold-deep: #c48a00;
+      --text: #1a2540;
+      --text-light: #4a5a7a;
+      --white: #ffffff;
+      --card: rgba(255,255,255,0.88);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--ink);
-      color: var(--paper);
-      font-family: 'Cormorant Garamond', serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
@@ -31,11 +37,34 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse at 20% 20%, rgba(192,57,43,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 80%, rgba(201,146,42,0.06) 0%, transparent 60%),
-        radial-gradient(ellipse at 50% 50%, rgba(40,15,5,0.9) 0%, var(--ink) 100%);
+        radial-gradient(ellipse at 10% 10%, rgba(61,111,212,0.18) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 15%, rgba(240,180,41,0.12) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 100%, rgba(26,63,160,0.1) 0%, transparent 50%),
+        linear-gradient(160deg, #f0f4ff 0%, #e8eeff 50%, #f5f7ff 100%);
       pointer-events: none;
       z-index: 0;
+    }
+
+    /* Floating stars/sparkles */
+    .stars-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star-float {
+      position: absolute;
+      opacity: 0;
+      animation: floatStar linear infinite;
+    }
+
+    @keyframes floatStar {
+      0% { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0.5); }
+      10% { opacity: 0.4; }
+      90% { opacity: 0.1; }
+      100% { opacity: 0; transform: translateY(-10vh) rotate(20deg) scale(1.2); }
     }
 
     .app {
@@ -43,407 +72,508 @@
       z-index: 1;
       max-width: 680px;
       margin: 0 auto;
-      padding: 0 20px 60px;
+      padding: 0 20px 80px;
     }
 
+    /* Header */
     header {
       text-align: center;
-      padding: 40px 0 28px;
+      padding: 44px 0 32px;
+      animation: fadeDown 0.9s ease both;
     }
 
-    .header-ornament {
+    .header-top {
       font-size: 11px;
-      letter-spacing: 6px;
-      color: var(--gold);
+      letter-spacing: 5px;
+      color: var(--blue);
       text-transform: uppercase;
       margin-bottom: 10px;
-      opacity: 0.8;
+      font-weight: 400;
     }
 
     .header-chinese {
       font-family: 'Noto Serif SC', serif;
-      font-size: clamp(44px, 12vw, 68px);
-      color: var(--gold-light);
+      font-size: clamp(56px, 15vw, 88px);
+      background: linear-gradient(135deg, var(--blue-deep), var(--blue), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       line-height: 1;
-      text-shadow: 0 0 40px rgba(201,146,42,0.3);
-      letter-spacing: 8px;
+      letter-spacing: 12px;
+      filter: drop-shadow(0 4px 20px rgba(61,111,212,0.25));
+      animation: shimmer 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes shimmer {
+      from { filter: drop-shadow(0 4px 15px rgba(61,111,212,0.2)); }
+      to { filter: drop-shadow(0 4px 30px rgba(61,111,212,0.45)); }
+    }
+
+    .header-pinyin {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(16px, 4vw, 22px);
+      font-style: italic;
+      color: var(--blue-mid);
+      letter-spacing: 6px;
+      margin-top: 4px;
+      opacity: 0.85;
     }
 
     .header-title {
-      font-size: clamp(16px, 4vw, 22px);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(17px, 4vw, 24px);
       font-style: italic;
-      color: var(--paper);
-      opacity: 0.7;
-      margin-top: 8px;
+      color: var(--blue-deep);
+      margin-top: 6px;
       letter-spacing: 2px;
+    }
+
+    .header-sub {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 6px;
+      letter-spacing: 1px;
+      font-weight: 300;
     }
 
     .header-divider {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin: 20px auto 0;
-      max-width: 300px;
+      margin: 18px auto 0;
+      max-width: 280px;
     }
 
     .header-divider::before,
     .header-divider::after {
       content: '';
       flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      height: 1.5px;
+      background: linear-gradient(to right, transparent, var(--blue-mid), transparent);
+      border-radius: 2px;
     }
 
-    .header-divider-symbol { color: var(--red); font-size: 18px; }
-
-    /* API Key input */
-    .api-key-section {
-      margin-bottom: 20px;
-      padding: 16px;
-      border: 1px solid rgba(201,146,42,0.2);
-      background: rgba(255,255,255,0.02);
-      position: relative;
+    .divider-icon {
+      font-size: 22px;
+      animation: pulse 2s ease-in-out infinite;
     }
 
-    .api-key-section .corner { position: absolute; width: 12px; height: 12px; border-color: var(--gold); border-style: solid; opacity: 0.4; }
-    .corner-tl { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
-    .corner-tr { top: 6px; right: 6px; border-width: 1px 1px 0 0; }
-    .corner-bl { bottom: 6px; left: 6px; border-width: 0 0 1px 1px; }
-    .corner-br { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
-
-    .api-key-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      opacity: 0.7;
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; }
     }
-
-    .api-key-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .api-key-input {
-      flex: 1;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(201,146,42,0.25);
-      color: var(--paper);
-      padding: 10px 14px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .api-key-input:focus { border-color: rgba(201,146,42,0.6); }
-    .api-key-input::placeholder { opacity: 0.3; font-style: italic; }
-
-    .btn-clear-key {
-      padding: 0 14px;
-      background: transparent;
-      border: 1px solid rgba(201,146,42,0.25);
-      border-left: none;
-      color: var(--gold);
-      font-size: 13px;
-      cursor: pointer;
-      opacity: 0.5;
-      transition: opacity 0.2s;
-      font-family: inherit;
-    }
-    .btn-clear-key:hover { opacity: 1; }
-
-    .api-key-saved {
-      display: inline-block;
-      font-size: 11px;
-      color: #6dbf6d;
-      letter-spacing: 2px;
-      margin-left: 8px;
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-    .api-key-saved.visible { opacity: 1; }
-
-    .api-key-note {
-      font-size: 11px;
-      color: var(--paper);
-      opacity: 0.35;
-      margin-top: 8px;
-      letter-spacing: 0.5px;
-      line-height: 1.5;
-    }
-
-
 
     /* Upload zone */
     .upload-zone {
-      border: 1px solid rgba(201,146,42,0.3);
-      padding: 36px 24px;
+      background: var(--card);
+      border: 2.5px dashed var(--blue-mid);
+      border-radius: 20px;
+      padding: 40px 24px;
       text-align: center;
       cursor: pointer;
       position: relative;
-      background: rgba(255,255,255,0.02);
       transition: all 0.3s ease;
       margin-bottom: 20px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(61,111,212,0.1);
+      animation: fadeUp 0.8s ease 0.3s both;
     }
 
-    .upload-zone::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(201,146,42,0.05) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s;
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--blue-deep);
+      background: var(--blue-light);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(61,111,212,0.18);
     }
 
-    .upload-zone:hover::before, .upload-zone.dragover::before { opacity: 1; }
-    .upload-zone:hover, .upload-zone.dragover { border-color: rgba(201,146,42,0.7); }
+    .upload-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.7; }
 
-    .upload-zone .corner { position: absolute; width: 14px; height: 14px; border-color: var(--gold); border-style: solid; opacity: 0.5; }
+    .upload-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
 
-    .upload-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.55; }
-    .upload-text { font-size: 17px; color: var(--gold-light); margin-bottom: 5px; font-style: italic; }
-    .upload-subtext { font-size: 12px; color: var(--paper); opacity: 0.35; letter-spacing: 1px; }
+    .upload-subtext {
+      font-size: 12px;
+      color: var(--blue-mid);
+      letter-spacing: 1px;
+    }
+
+    .upload-formats {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-light);
+      opacity: 0.5;
+      letter-spacing: 1px;
+    }
 
     #fileInput { display: none; }
 
-    .btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .btn {
-      padding: 13px;
-      border: 1px solid rgba(201,146,42,0.4);
-      background: transparent;
-      color: var(--gold-light);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 15px;
-      font-style: italic;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .btn:hover { border-color: var(--gold-light); background: rgba(201,146,42,0.06); }
-
-    .btn-primary {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, rgba(192,57,43,0.85), rgba(140,30,20,0.95));
-      border: 1px solid var(--red);
-      border-radius: 0;
-      color: var(--paper);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13px;
-      font-style: normal;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      margin-bottom: 20px;
-    }
-
-    .btn-primary:hover { background: linear-gradient(135deg, rgba(192,57,43,1), rgba(160,40,30,1)); }
-    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
-
     /* Preview */
-    .preview-container { position: relative; margin-bottom: 20px; display: none; }
+    .preview-container {
+      position: relative;
+      margin-bottom: 20px;
+      display: none;
+      animation: fadeIn 0.5s ease;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(61,111,212,0.15);
+    }
+
     .preview-container.visible { display: block; }
 
     .preview-img {
       width: 100%;
-      max-height: 340px;
+      max-height: 360px;
       object-fit: contain;
       display: block;
-      border: 1px solid rgba(201,146,42,0.2);
+      background: var(--blue-light);
     }
 
     .preview-remove {
       position: absolute;
-      top: 8px; right: 8px;
-      background: rgba(26,10,0,0.85);
-      border: 1px solid var(--red);
-      color: var(--red);
-      width: 28px; height: 28px;
+      top: 12px;
+      right: 12px;
+      background: var(--white);
+      border: 2px solid var(--blue);
+      color: var(--blue-deep);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
       cursor: pointer;
-      font-size: 15px;
-      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(61,111,212,0.2);
+      transition: all 0.2s;
     }
+
+    .preview-remove:hover { background: var(--blue-light); }
+
+    /* Analyze button */
+    .btn-analyze {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--blue-deep), var(--blue), var(--gold));
+      background-size: 200% 200%;
+      border: none;
+      border-radius: 50px;
+      color: var(--white);
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-style: italic;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(26,63,160,0.3);
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    .btn-analyze:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(26,63,160,0.4);
+    }
+
+    .btn-analyze:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
 
     /* Loading */
-    .loading { display: none; text-align: center; padding: 48px 24px; }
-    .loading.visible { display: block; }
+    .loading { display: none; text-align: center; padding: 60px 24px; }
+    .loading.visible { display: block; animation: fadeIn 0.5s ease; }
 
-    .loading-spinner {
-      width: 44px; height: 44px;
-      border: 2px solid rgba(201,146,42,0.2);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
+    .loading-icons { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+
+    .loading-icon {
+      font-size: 28px;
+      animation: bounce 1.2s ease-in-out infinite;
     }
 
-    .loading-text { font-style: italic; color: var(--gold-light); font-size: 16px; animation: pulse 2s ease-in-out infinite; }
-    .loading-subtext { font-size: 12px; color: var(--paper); opacity: 0.4; margin-top: 6px; letter-spacing: 2px; }
+    .loading-icon:nth-child(2) { animation-delay: 0.2s; }
+    .loading-icon:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    .loading-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-style: italic;
+      color: var(--blue-deep);
+      animation: fadeInOut 2s ease-in-out infinite;
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .loading-sub { font-size: 12px; color: var(--text-light); margin-top: 8px; letter-spacing: 1px; }
 
     /* Result */
-    .result { display: none; animation: fadeIn 0.8s ease; }
+    .result { display: none; animation: fadeIn 1s ease; }
     .result.visible { display: block; }
 
-    .result-header {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    .result-card {
+      background: linear-gradient(135deg, #eef2ff, #fffbe6, #eef2ff);
+      border-radius: 24px;
+      padding: 32px 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 40px rgba(61,111,212,0.15);
+      text-align: center;
+      border: 2px solid rgba(61,111,212,0.15);
+      position: relative;
+      overflow: hidden;
     }
 
-    .result-header-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--gold), transparent); }
-    .result-header-text { font-size: 11px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; white-space: nowrap; }
+    .result-card::before {
+      content: '✨';
+      position: absolute;
+      font-size: 80px;
+      top: -10px; right: -10px;
+      opacity: 0.06;
+    }
 
-    .result-content { font-size: 16px; line-height: 1.85; color: var(--paper); opacity: 0.9; }
+    .result-card::after {
+      content: '🌟';
+      position: absolute;
+      font-size: 80px;
+      bottom: -10px; left: -10px;
+      opacity: 0.06;
+    }
+
+    .result-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--blue);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .result-archetype {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 5vw, 28px);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--blue-deep), var(--blue), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .result-stars { font-size: 22px; letter-spacing: 4px; margin-top: 8px; }
+
+    .content-card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 24px rgba(61,111,212,0.08);
+      border: 1.5px solid rgba(61,111,212,0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .result-content { font-size: 16px; line-height: 1.85; color: var(--text); }
 
     .result-content h2 {
-      font-family: 'Noto Serif SC', serif;
-      font-size: 17px; color: var(--gold-light);
-      margin: 28px 0 12px; padding-bottom: 8px;
-      border-bottom: 1px solid rgba(201,146,42,0.2);
-      letter-spacing: 2px;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-style: italic;
+      background: linear-gradient(135deg, var(--blue-deep), var(--gold-deep));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 24px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px solid rgba(61,111,212,0.15);
     }
 
-    .result-content h3 { font-size: 15px; color: var(--gold); margin: 20px 0 8px; font-style: italic; }
+    .result-content h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: var(--blue-deep);
+      margin: 18px 0 8px;
+      font-style: italic;
+    }
+
     .result-content p { margin-bottom: 14px; }
-    .result-content strong { color: var(--gold-light); font-weight: 600; }
-    .result-content em { font-style: italic; }
+    .result-content strong { color: var(--blue-deep); font-weight: 700; }
+    .result-content em { font-style: italic; color: var(--text-light); }
 
     .result-content table {
-      width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px;
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(61,111,212,0.08);
     }
 
     .result-content th {
-      background: rgba(201,146,42,0.1); color: var(--gold);
-      padding: 8px 12px; text-align: left;
-      border: 1px solid rgba(201,146,42,0.2);
-      font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+      background: linear-gradient(135deg, rgba(61,111,212,0.12), rgba(240,180,41,0.08));
+      color: var(--blue-deep);
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1.5px solid rgba(61,111,212,0.15);
     }
 
     .result-content td {
-      padding: 8px 12px; border: 1px solid rgba(201,146,42,0.1); opacity: 0.85;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(61,111,212,0.08);
+      color: var(--text);
     }
 
-    .result-content tr:hover td { background: rgba(201,146,42,0.04); }
-    .result-content hr { border: none; border-top: 1px solid rgba(201,146,42,0.2); margin: 20px 0; }
+    .result-content tr:last-child td { border-bottom: none; }
+    .result-content tr:hover td { background: rgba(61,111,212,0.04); }
 
     .result-content blockquote {
-      border-left: 2px solid var(--red);
-      padding: 8px 16px; margin: 14px 0;
-      background: rgba(192,57,43,0.05);
-      font-style: italic; opacity: 0.8;
+      border-left: 3px solid var(--blue);
+      padding: 10px 18px;
+      margin: 16px 0;
+      background: rgba(61,111,212,0.05);
+      border-radius: 0 12px 12px 0;
+      font-style: italic;
+      color: var(--text-light);
     }
 
     .btn-reset {
-      width: 100%; margin-top: 24px; padding: 13px;
+      width: 100%;
+      margin-top: 24px;
+      padding: 16px;
       background: transparent;
-      border: 1px solid rgba(201,146,42,0.2);
-      color: var(--paper); opacity: 0.45;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
-      cursor: pointer; transition: all 0.2s ease;
+      border: 2px solid var(--blue-mid);
+      border-radius: 50px;
+      color: var(--blue-deep);
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-style: italic;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.25s ease;
     }
 
-    .btn-reset:hover { opacity: 0.75; border-color: rgba(201,146,42,0.4); }
+    .btn-reset:hover {
+      background: var(--blue-light);
+      border-color: var(--blue-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(61,111,212,0.15);
+    }
 
     footer {
-      text-align: center; padding: 28px 0 0;
-      font-size: 11px; letter-spacing: 3px;
-      color: var(--paper); opacity: 0.18; text-transform: uppercase;
+      text-align: center;
+      padding: 32px 0 0;
+      font-size: 11px;
+      letter-spacing: 5px;
+      color: var(--text-light);
+      opacity: 0.4;
+      text-transform: uppercase;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--ink); }
-    ::-webkit-scrollbar-thumb { background: rgba(201,146,42,0.3); }
+    @media (max-width: 500px) {
+      .app { padding: 0 16px 60px; }
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 10px; }
   </style>
 </head>
 <body>
+
+<div class="stars-bg" id="starsEl"></div>
+
 <div class="app">
   <header>
-    <div class="header-ornament">Ancient Chinese Physiognomy</div>
+    <div class="header-top">Ancient Chinese Face Reading</div>
     <div class="header-chinese">面相</div>
-    <div class="header-title">MianXiang Face Reader</div>
-    <div class="header-divider"><div class="header-divider-symbol">☯</div></div>
+    <div class="header-pinyin">Miàn Xiàng</div>
+    <div class="header-title">Face Reader</div>
+    <div class="header-sub">Upload a photo · Discover what your face reveals</div>
+    <div class="header-divider"><div class="divider-icon">✨</div></div>
   </header>
 
   <div id="inputSection">
-    <!-- API Key -->
-    <div class="api-key-section">
-      <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
-      <div class="corner corner-bl"></div><div class="corner corner-br"></div>
-      <div class="api-key-label">Anthropic API Key</div>
-      <div class="api-key-row">
-        <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-..." />
-        <button class="btn-clear-key" id="btnClearKey" title="Clear saved key">✕</button>
-      </div>
-      <div class="api-key-note" id="apiKeyNote">Your key is saved locally in this browser only and sent directly to api.anthropic.com</div>
-    </div>
-
-
-
-    <!-- Upload -->
+    <!-- Upload Zone -->
     <div class="upload-zone" id="uploadZone">
-      <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
-      <div class="corner corner-bl"></div><div class="corner corner-br"></div>
-      <div class="upload-icon">⬡</div>
-      <div class="upload-text">Drop a photograph here</div>
-      <div class="upload-subtext">JPEG · PNG · WEBP · GIF</div>
+      <div class="upload-icon">🌟</div>
+      <div class="upload-text">Drop your photograph here</div>
+      <div class="upload-subtext">or tap to choose a photo</div>
+      <div class="upload-formats">JPEG · PNG · WEBP · GIF</div>
       <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" />
     </div>
 
-    <div class="btn-row">
-      <button class="btn" id="btnUpload">📎 &nbsp;Attach Photo</button>
-      <button class="btn" id="btnCamera">📷 &nbsp;Take Photo</button>
-    </div>
-
+    <!-- Preview -->
     <div class="preview-container" id="previewContainer">
       <img id="previewImg" src="" alt="Preview" class="preview-img" />
       <button class="preview-remove" id="btnRemove">✕</button>
     </div>
 
-    <button class="btn-primary" id="btnAnalyze" disabled>Commence Reading</button>
+    <button class="btn-analyze" id="btnAnalyze" disabled>
+      ✨ &nbsp; Reveal My Reading &nbsp; ✨
+    </button>
   </div>
 
+  <!-- Loading -->
   <div class="loading" id="loading">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Consulting the ancient masters…</div>
-    <div class="loading-subtext">Reading bones and surface features</div>
-  </div>
-
-  <div class="result" id="result">
-    <div class="result-header">
-      <div class="result-header-line"></div>
-      <div class="result-header-text">Your Reading</div>
-      <div class="result-header-line" style="background:linear-gradient(to left,var(--gold),transparent)"></div>
+    <div class="loading-icons">
+      <div class="loading-icon">✨</div>
+      <div class="loading-icon">🌟</div>
+      <div class="loading-icon">✨</div>
     </div>
-    <div class="result-content" id="resultContent"></div>
-    <button class="btn-reset" id="btnReset">✦ &nbsp;New Reading &nbsp;✦</button>
+    <div class="loading-text">Reading the wisdom of your face…</div>
+    <div class="loading-sub">Consulting the ancient masters of 面相</div>
   </div>
 
-  <footer>面相 · Physiognomy · 相術</footer>
+  <!-- Result -->
+  <div class="result" id="result">
+    <div class="result-card">
+      <div class="result-label">Your Face Archetype</div>
+      <div class="result-archetype" id="archetypeDisplay">—</div>
+      <div class="result-stars">✨ 🌟 ✨</div>
+    </div>
+    <div class="content-card">
+      <div class="result-content" id="resultContent"></div>
+    </div>
+    <button class="btn-reset" id="btnReset">✨ &nbsp; New Reading &nbsp; ✨</button>
+  </div>
+
+  <footer>Ancient Chinese Face Reading</footer>
 </div>
 
 <script>
-  let selectedFile = null;
-  const selectedType = 'mianxiang';
+  // Floating stars
+  const starsEl = document.getElementById('starsEl');
+  ['✨','⭐','🌟','💫','✦','⋆'].forEach((ch, i) => {
+    [1,2].forEach(j => {
+      const s = document.createElement('div');
+      s.className = 'star-float';
+      s.textContent = ch;
+      s.style.cssText = `left:${Math.random()*100}%;font-size:${Math.random()*12+8}px;animation-duration:${Math.random()*14+12}s;animation-delay:${Math.random()*16}s`;
+      starsEl.appendChild(s);
+    });
+  });
 
+  let selectedFile = null;
   const uploadZone = document.getElementById('uploadZone');
   const fileInput = document.getElementById('fileInput');
-  const btnUpload = document.getElementById('btnUpload');
-  const btnCamera = document.getElementById('btnCamera');
   const btnAnalyze = document.getElementById('btnAnalyze');
   const btnRemove = document.getElementById('btnRemove');
   const btnReset = document.getElementById('btnReset');
@@ -452,77 +582,19 @@
   const loading = document.getElementById('loading');
   const result = document.getElementById('result');
   const resultContent = document.getElementById('resultContent');
+  const archetypeDisplay = document.getElementById('archetypeDisplay');
   const inputSection = document.getElementById('inputSection');
-  const apiKeyInput = document.getElementById('apiKeyInput');
-  const btnClearKey = document.getElementById('btnClearKey');
-  const apiKeyNote = document.getElementById('apiKeyNote');
 
-  // Load saved API key on startup
-  const savedKey = localStorage.getItem('mianxiang_api_key');
-  if (savedKey) {
-    apiKeyInput.value = savedKey;
-    apiKeyNote.innerHTML = '<span style="color:#6dbf6d;letter-spacing:1px">✓ API key loaded</span> &nbsp;·&nbsp; Edit to update, ✕ to clear';
-  }
-
-  // Save key on input change
-  apiKeyInput.addEventListener('input', () => {
-    const val = apiKeyInput.value.trim();
-    if (val.startsWith('sk-ant-') && val.length > 20) {
-      localStorage.setItem('mianxiang_api_key', val);
-      apiKeyNote.innerHTML = '<span style="color:#6dbf6d;letter-spacing:1px">✓ Key saved</span> &nbsp;·&nbsp; Edit to update, ✕ to clear';
-    }
-  });
-
-  // Clear key
-  btnClearKey.addEventListener('click', () => {
-    localStorage.removeItem('mianxiang_api_key');
-    apiKeyInput.value = '';
-    apiKeyNote.textContent = 'Your key is saved locally in this browser only and sent directly to api.anthropic.com';
-    apiKeyInput.focus();
-  });
-
-
-
-  // Drag & drop
+  // Upload zone
+  uploadZone.addEventListener('click', () => fileInput.click());
   uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
   uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
   uploadZone.addEventListener('drop', e => {
     e.preventDefault(); uploadZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) setFile(file);
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) setFile(f);
   });
-
-  uploadZone.addEventListener('click', () => fileInput.click());
-  btnUpload.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', () => { if (fileInput.files[0]) setFile(fileInput.files[0]); });
-
-  // Camera
-  btnCamera.addEventListener('click', async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      const video = document.createElement('video');
-      video.srcObject = stream; video.autoplay = true; video.playsinline = true;
-      video.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:999;background:#000';
-      const overlay = document.createElement('div');
-      overlay.style.cssText = 'position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:40px;gap:16px';
-      const captureBtn = document.createElement('button');
-      captureBtn.textContent = '⬤ Capture';
-      captureBtn.style.cssText = 'padding:14px 32px;background:var(--red);border:2px solid #fff;color:#fff;font-family:Cormorant Garamond,serif;font-size:18px;cursor:pointer;letter-spacing:2px';
-      const cancelBtn = document.createElement('button');
-      cancelBtn.textContent = 'Cancel';
-      cancelBtn.style.cssText = 'padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,0.4);color:#fff;font-family:Cormorant Garamond,serif;font-size:15px;cursor:pointer';
-      overlay.appendChild(captureBtn); overlay.appendChild(cancelBtn);
-      document.body.appendChild(video); document.body.appendChild(overlay);
-      const cleanup = () => { stream.getTracks().forEach(t => t.stop()); video.remove(); overlay.remove(); };
-      captureBtn.addEventListener('click', () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        canvas.toBlob(blob => { setFile(new File([blob], 'capture.jpg', { type: 'image/jpeg' })); cleanup(); }, 'image/jpeg', 0.92);
-      });
-      cancelBtn.addEventListener('click', cleanup);
-    } catch { alert('Camera access denied or unavailable.'); }
-  });
 
   function setFile(file) {
     selectedFile = file;
@@ -543,8 +615,6 @@
   btnAnalyze.addEventListener('click', analyze);
 
   async function analyze() {
-    const apiKey = apiKeyInput.value.trim();
-    if (!apiKey) { alert('Please enter your Anthropic API key first.'); apiKeyInput.focus(); return; }
     if (!selectedFile) return;
 
     inputSection.style.display = 'none';
@@ -553,65 +623,61 @@
 
     try {
       const base64 = await toBase64(selectedFile);
-      const prompt = buildPrompt();
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://billowing-voice-e40bmianxiang-proxy.danny-679.workers.dev', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'claude-opus-4-6',
-          max_tokens: 1500,
+          max_tokens: 1000,
           messages: [{
             role: 'user',
             content: [
               { type: 'image', source: { type: 'base64', media_type: selectedFile.type || 'image/jpeg', data: base64 } },
-              { type: 'text', text: prompt }
+              { type: 'text', text: buildPrompt() }
             ]
           }]
         })
       });
 
-      // Check if API key is present
-      if (!apiKey) throw new Error('Please enter your Anthropic API key.');
-
-      // Check response before parsing
-      if (!res.ok) {
-        const raw = await res.text();
-        throw new Error('HTTP ' + res.status + ' from Anthropic API. Check your API key is correct and has credits. Raw: ' + raw.substring(0, 200));
-      }
-
+      if (!res.ok) { const raw = await res.text(); throw new Error('HTTP ' + res.status + ': ' + raw.substring(0,200)); }
       const data = await res.json();
       if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
-      const text = (data.content || []).map(b => b.text || '').join('') || 'No reading returned.';
+      const text = (data.content||[]).map(b=>b.text||'').join('') || 'No reading returned.';
+
+      // Extract archetype
+      const archetypeMatch = text.match(/## Your Archetype\s*\n([^\n]+)/);
+      const archetype = archetypeMatch ? archetypeMatch[1].trim() : '✨ The Remarkable One';
 
       loading.classList.remove('visible');
+      archetypeDisplay.textContent = archetype;
       resultContent.innerHTML = mdToHTML(text);
       result.classList.add('visible');
 
-    } catch (err) {
+    } catch(err) {
       loading.classList.remove('visible');
-      resultContent.innerHTML =
-        '<p style="color:var(--red);font-weight:600;margin-bottom:10px">Error</p>' +
-        '<p style="font-size:14px;line-height:1.8;opacity:0.8">' + err.message + '</p>';
+      resultContent.innerHTML = '<p style="color:var(--blue-deep);font-weight:700;margin-bottom:10px">Oops! Something went wrong 🌟</p><p style="font-size:14px;line-height:1.8;color:var(--text-light)">' + err.message + '</p>';
+      archetypeDisplay.textContent = '—';
       result.classList.add('visible');
     }
   }
 
   btnReset.addEventListener('click', () => {
-    selectedFile = null; previewImg.src = ''; fileInput.value = '';
-    result.classList.remove('visible'); loading.classList.remove('visible');
-    uploadZone.style.display = ''; previewContainer.classList.remove('visible');
-    inputSection.style.display = ''; btnAnalyze.disabled = true;
+    selectedFile = null;
+    previewImg.src = '';
+    fileInput.value = '';
+    result.classList.remove('visible');
+    loading.classList.remove('visible');
+    uploadZone.style.display = '';
+    previewContainer.classList.remove('visible');
+    inputSection.style.display = '';
+    btnAnalyze.disabled = true;
     resultContent.innerHTML = '';
+    archetypeDisplay.textContent = '—';
   });
 
   function toBase64(file) {
-    return new Promise((res, rej) => {
+    return new Promise((res,rej) => {
       const r = new FileReader();
       r.onload = () => res(r.result.split(',')[1]);
       r.onerror = rej;
@@ -620,25 +686,47 @@
   }
 
   function buildPrompt() {
-    return 'You are a fun and insightful Chinese face reading (MianXiang 面相) master. Analyze the face in this photo and give a light-hearted, engaging reading that is easy to understand. Keep it casual, warm, and fun — like a wise friend sharing observations over tea.\n\nStructure your response EXACTLY like this:\n\n## First Impressions\nWrite 1 casual, engaging paragraph about the overall energy and vibe of this face. What kind of person does this look like? Keep it warm and fun.\n\n## What Your Face Reveals\nWrite 1 paragraph covering the most interesting and notable features — eyes, nose, forehead, jaw — and what they suggest about personality, luck, and life path. Keep it light and positive.\n\n## Your Face Reading Summary\n| Feature | Reading |\n|---|---|\n| Wealth Luck | one line |\n| Career | one line |\n| Relationships | one line |\n| Personality | one line |\n| Later Life | one line |\n\n## Your Archetype\nOne line naming their classical face archetype e.g. The Commander 将星格 with a one-sentence fun description.\n\nKeep it SHORT, fun, and upbeat. Think horoscope energy but grounded in real MianXiang principles.';
+    return `You are a fun and insightful Chinese face reading (MianXiang 面相) master. Analyze the face in this photo and give a light-hearted, engaging reading that is easy to understand. Keep it casual, warm, and fun — like a wise friend sharing observations over tea. Use some emojis to keep it lively!
+
+Structure your response EXACTLY like this:
+
+## First Impressions ✨
+Write 1 casual, engaging paragraph about the overall energy and vibe of this face. What kind of person does this look like? Keep it warm and fun.
+
+## What Your Face Reveals 🌟
+Write 1 paragraph covering the most interesting and notable features — eyes, nose, forehead, jaw — and what they suggest about personality, luck, and life path. Keep it light and positive.
+
+## Your Face Reading Summary
+| Feature | Reading |
+|---|---|
+| Wealth Luck | one fun line |
+| Career | one fun line |
+| Relationships | one fun line |
+| Personality | one fun line |
+| Later Life | one fun line |
+
+## Your Archetype
+Name their classical face archetype in one line e.g. "The Commander 将星格 ⭐" with a short fun description.
+
+Keep the whole reading SHORT, fun, and upbeat. Think horoscope energy but grounded in real MianXiang principles!`;
   }
 
   function mdToHTML(t) {
     return t
-      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-      .replace(/^# (.+)$/gm, '<h2>$1</h2>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/^---$/gm, '<hr>')
-      .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+      .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+      .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+      .replace(/^# (.+)$/gm,'<h2>$1</h2>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/^---$/gm,'<hr>')
+      .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
       .replace(/^\|(.+)\|$/gm, row => {
-        const cells = row.split('|').filter(c => c.trim());
-        if (cells.every(c => /^[\s\-:]+$/.test(c))) return '';
-        return '<tr>' + cells.map(c => `<td>${c.trim()}</td>`).join('') + '</tr>';
+        const cells = row.split('|').filter(c=>c.trim());
+        if (cells.every(c=>/^[\s\-:]+$/.test(c))) return '';
+        return '<tr>'+cells.map(c=>`<td>${c.trim()}</td>`).join('')+'</tr>';
       })
       .replace(/(<tr>[\s\S]*?<\/tr>)/g, m => {
-        const rows = m.match(/<tr>[\s\S]*?<\/tr>/g) || [];
+        const rows = m.match(/<tr>[\s\S]*?<\/tr>/g)||[];
         if (!rows.length) return m;
         const head = rows[0].replace(/<td>/g,'<th>').replace(/<\/td>/g,'</th>');
         return `<table><thead>${head}</thead><tbody>${rows.slice(1).join('')}</tbody></table>`;
@@ -652,3 +740,4 @@
 </script>
 </body>
 </html>
+
