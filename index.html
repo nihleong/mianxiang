@@ -841,7 +841,11 @@
     fileInput.value = '';
   });
 
-  btnAnalyze.addEventListener('click', analyze);
+  btnAnalyze.addEventListener('click', function() {
+    if (selectedFile) {
+      analyze();
+    }
+  });
 
   async function analyze() {
     if (!selectedFile) return;
@@ -1116,7 +1120,13 @@ Be detailed, warm, specific, and encouraging. Ground every insight in real MianX
     var banner = document.getElementById('successBanner');
     if (banner) {
       banner.style.display = 'block';
-      banner.textContent = '✅ Payment confirmed! Upload your photo below to begin your reading.';
+    }
+    // Re-attach upload zone click since section was hidden
+    var uz = document.getElementById('uploadZone');
+    var fi = document.getElementById('fileInput');
+    if (uz && fi) {
+      uz.onclick = function() { fi.click(); };
+      fi.onchange = function() { if (fi.files[0]) setFile(fi.files[0]); };
     }
   }
 
