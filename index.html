@@ -1118,15 +1118,17 @@ Be detailed, warm, specific, and encouraging. Ground every insight in real MianX
     document.getElementById('landingSection').style.display = 'none';
     document.getElementById('uploadSection').style.display = 'block';
     var banner = document.getElementById('successBanner');
-    if (banner) {
-      banner.style.display = 'block';
-    }
-    // Re-attach upload zone click since section was hidden
-    var uz = document.getElementById('uploadZone');
+    if (banner) { banner.style.display = 'block'; }
+    // Move fileInput to body so it works reliably
     var fi = document.getElementById('fileInput');
-    if (uz && fi) {
-      uz.onclick = function() { fi.click(); };
+    if (fi) {
+      fi.style.display = 'none';
+      document.body.appendChild(fi);
       fi.onchange = function() { if (fi.files[0]) setFile(fi.files[0]); };
+    }
+    var uz = document.getElementById('uploadZone');
+    if (uz) {
+      uz.onclick = function() { var f = document.getElementById('fileInput'); if(f) f.click(); };
     }
   }
 
