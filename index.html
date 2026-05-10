@@ -906,7 +906,7 @@
           messages: [{
             role: 'user',
             content: [
-              { type: 'image', source: { type: 'base64', media_type: selectedFile.type || 'image/jpeg', data: base64 } },
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64 } },
               { type: 'text', text: buildPrompt() }
             ]
           }]
