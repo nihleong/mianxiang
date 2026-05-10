@@ -758,124 +758,6 @@ Name their classical face archetype e.g. "The Commander 将星格 ⭐" and write
 Be detailed, warm, specific, and encouraging. Ground every insight in real MianXiang principles while keeping the tone engaging and accessible.`;
   }
 
-  // PDF Download
-  document.getElementById('btnDownload').addEventListener('click', () => {
-    const archetype = document.getElementById('archetypeDisplay').textContent;
-    const content = document.getElementById('resultContent').innerHTML;
-    const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(\`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>面相 MianXiang Reading</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Lato', sans-serif; color: #1a2540; background: white; padding: 0; }
-  
-  .cover {
-    background: linear-gradient(135deg, #1a3fa0, #3d6fd4, #f0b429);
-    color: white;
-    padding: 60px 48px;
-    text-align: center;
-    min-height: 220px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .cover-top { font-size: 10px; letter-spacing: 5px; text-transform: uppercase; opacity: 0.8; margin-bottom: 12px; }
-  .cover-chinese { font-family: serif; font-size: 72px; letter-spacing: 12px; margin-bottom: 4px; }
-  .cover-pinyin { font-family: 'Playfair Display', serif; font-size: 18px; font-style: italic; letter-spacing: 4px; opacity: 0.9; margin-bottom: 4px; }
-  .cover-title { font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.75; }
-
-  .meta {
-    background: #f0f4ff;
-    padding: 16px 48px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #4a5a7a;
-    letter-spacing: 1px;
-    border-bottom: 2px solid #e8eeff;
-  }
-
-  .archetype-banner {
-    background: linear-gradient(135deg, #eef2ff, #fffbe6);
-    padding: 24px 48px;
-    text-align: center;
-    border-bottom: 1px solid #e8eeff;
-  }
-
-  .archetype-label { font-size: 10px; letter-spacing: 4px; color: #3d6fd4; text-transform: uppercase; margin-bottom: 6px; }
-  .archetype-value { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #1a3fa0; }
-
-  .content { padding: 32px 48px 48px; }
-
-  h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    font-style: italic;
-    color: #1a3fa0;
-    margin: 28px 0 10px;
-    padding-bottom: 6px;
-    border-bottom: 1.5px solid #e8eeff;
-  }
-
-  p { font-size: 13px; line-height: 1.8; color: #1a2540; margin-bottom: 12px; }
-  strong { color: #1a3fa0; font-weight: 700; }
-
-  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; table-layout: fixed; }
-  th { background: linear-gradient(135deg, rgba(61,111,212,0.1), rgba(240,180,41,0.06)); color: #1a3fa0; padding: 8px 12px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1.5px solid #dde4ff; }
-  th:first-child, td:first-child { width: 30%; font-weight: 700; vertical-align: top; }
-  th:last-child, td:last-child { width: 70%; vertical-align: top; }
-  td { padding: 10px 12px; border-bottom: 1px solid #eef2ff; line-height: 1.6; vertical-align: top; }
-  tr:last-child td { border-bottom: none; }
-
-  .footer {
-    background: #1a3fa0;
-    color: white;
-    text-align: center;
-    padding: 16px;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.9;
-    margin-top: 32px;
-  }
-
-  @media print {
-    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  }
-</style>
-</head>
-<body>
-  <div class="cover">
-    <div class="cover-top">Ancient Chinese Face Reading</div>
-    <div class="cover-chinese">面相</div>
-    <div class="cover-pinyin">Miàn Xiàng</div>
-    <div class="cover-title">Personal Face Reading Report</div>
-  </div>
-  <div class="meta">
-    <span>Prepared by MianXiang Face Reader</span>
-    <span>Date: \${date}</span>
-    <span>mianxiang.moonstoneadvisers.com</span>
-  </div>
-  <div class="archetype-banner">
-    <div class="archetype-label">Your Face Archetype</div>
-    <div class="archetype-value">\${archetype}</div>
-  </div>
-  <div class="content">\${content}</div>
-  <div class="footer">面相 MianXiang · Ancient Chinese Face Reading · mianxiang.moonstoneadvisers.com</div>
-</body>
-</html>\`);
-    printWindow.document.close();
-    setTimeout(() => { printWindow.print(); }, 800);
-  });
-
   function mdToHTML(t) {
     return t
       .replace(/^### (.+)$/gm,'<h3>$1</h3>')
@@ -885,23 +767,77 @@ Be detailed, warm, specific, and encouraging. Ground every insight in real MianX
       .replace(/\*(.+?)\*/g,'<em>$1</em>')
       .replace(/^---$/gm,'<hr>')
       .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
-      .replace(/^\|(.+)\|$/gm, row => {
-        const cells = row.split('|').filter(c=>c.trim());
-        if (cells.every(c=>/^[\s\-:]+$/.test(c))) return '';
-        return '<tr>'+cells.map(c=>`<td>${c.trim()}</td>`).join('')+'</tr>';
+      .replace(/^\|(.+)\|$/gm, function(row) {
+        var cells = row.split('|').filter(function(c){return c.trim();});
+        if (cells.every(function(c){return /^[\s\-:]+$/.test(c);})) return '';
+        return '<tr>'+cells.map(function(c){return '<td>'+c.trim()+'</td>';}).join('')+'</tr>';
       })
-      .replace(/(<tr>[\s\S]*?<\/tr>)/g, m => {
-        const rows = m.match(/<tr>[\s\S]*?<\/tr>/g)||[];
+      .replace(/(<tr>[\s\S]*?<\/tr>)/g, function(m) {
+        var rows = m.match(/<tr>[\s\S]*?<\/tr>/g)||[];
         if (!rows.length) return m;
-        const head = rows[0].replace(/<td>/g,'<th>').replace(/<\/td>/g,'</th>');
-        return `<table><thead>${head}</thead><tbody>${rows.slice(1).join('')}</tbody></table>`;
+        var head = rows[0].replace(/<td>/g,'<th>').replace(/<\/td>/g,'<\/th>');
+        return '<table><thead>'+head+'<\/thead><tbody>'+rows.slice(1).join('')+'<\/tbody><\/table>';
       })
-      .replace(/\n\n/g,'</p><p>')
-      .replace(/^(?!<[htbp])(.+)$/gm,'<p>$1</p>')
+      .replace(/\n\n/g,'<\/p><p>')
+      .replace(/^(?!<[htbp])(.+)$/gm,'<p>$1<\/p>')
       .replace(/<p><\/p>/g,'')
       .replace(/<p>(<[hbt])/g,'$1')
       .replace(/(<\/[hbt][^>]*>)<\/p>/g,'$1');
   }
+
+  // PDF Download
+  document.getElementById('btnDownload').addEventListener('click', function() {
+    var archetype = document.getElementById('archetypeDisplay').textContent;
+    var readingContent = document.getElementById('resultContent').innerHTML;
+    var date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">';
+    html += '<title>MianXiang Face Reading</title>';
+    html += '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">';
+    html += '<style>';
+    html += '* { box-sizing: border-box; margin: 0; padding: 0; }';
+    html += 'body { font-family: Lato, sans-serif; color: #1a2540; background: white; }';
+    html += '.cover { background: linear-gradient(135deg, #1a3fa0, #3d6fd4, #f0b429); color: white; padding: 56px 48px; text-align: center; }';
+    html += '.cover-top { font-size: 10px; letter-spacing: 5px; text-transform: uppercase; opacity: 0.8; margin-bottom: 10px; }';
+    html += '.cover-chinese { font-family: serif; font-size: 68px; letter-spacing: 12px; margin-bottom: 4px; }';
+    html += '.cover-pinyin { font-family: "Playfair Display", serif; font-size: 18px; font-style: italic; letter-spacing: 4px; opacity: 0.9; margin-bottom: 4px; }';
+    html += '.cover-title { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.75; }';
+    html += '.meta { background: #f0f4ff; padding: 12px 48px; display: flex; justify-content: space-between; font-size: 11px; color: #4a5a7a; letter-spacing: 1px; border-bottom: 2px solid #e8eeff; }';
+    html += '.archetype-banner { background: linear-gradient(135deg, #eef2ff, #fffbe6); padding: 22px 48px; text-align: center; border-bottom: 1px solid #e8eeff; }';
+    html += '.archetype-label { font-size: 10px; letter-spacing: 4px; color: #3d6fd4; text-transform: uppercase; margin-bottom: 6px; }';
+    html += '.archetype-value { font-family: "Playfair Display", serif; font-size: 22px; font-weight: 700; color: #1a3fa0; }';
+    html += '.content { padding: 32px 48px 48px; }';
+    html += 'h2 { font-family: "Playfair Display", serif; font-size: 16px; font-style: italic; color: #1a3fa0; margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 1.5px solid #e8eeff; }';
+    html += 'h3 { font-family: "Playfair Display", serif; font-size: 14px; color: #3d6fd4; margin: 16px 0 8px; }';
+    html += 'p { font-size: 13px; line-height: 1.8; color: #1a2540; margin-bottom: 12px; }';
+    html += 'strong { color: #1a3fa0; font-weight: 700; }';
+    html += 'table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; table-layout: fixed; }';
+    html += 'th { background: rgba(61,111,212,0.1); color: #1a3fa0; padding: 8px 12px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1.5px solid #dde4ff; }';
+    html += 'th:first-child, td:first-child { width: 32%; font-weight: 700; vertical-align: middle; white-space: nowrap; }';
+    html += 'th:last-child, td:last-child { width: 68%; vertical-align: top; }';
+    html += 'td { padding: 10px 12px; border-bottom: 1px solid #eef2ff; line-height: 1.6; vertical-align: top; }';
+    html += 'tr:last-child td { border-bottom: none; }';
+    html += 'blockquote { border-left: 3px solid #3d6fd4; padding: 8px 16px; margin: 12px 0; background: rgba(61,111,212,0.05); border-radius: 0 8px 8px 0; font-style: italic; color: #4a5a7a; }';
+    html += '.footer { background: #1a3fa0; color: white; text-align: center; padding: 14px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-top: 32px; }';
+    html += '@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
+    html += '</style></head><body>';
+    html += '<div class="cover">';
+    html += '<div class="cover-top">Ancient Chinese Face Reading</div>';
+    html += '<div class="cover-chinese">&#38754;&#30456;</div>';
+    html += '<div class="cover-pinyin">Mi&#224;n Xi&#224;ng</div>';
+    html += '<div class="cover-title">Personal Face Reading Report</div>';
+    html += '</div>';
+    html += '<div class="meta"><span>MianXiang Face Reader</span><span>Date: ' + date + '</span><span>mianxiang.moonstoneadvisers.com</span></div>';
+    html += '<div class="archetype-banner"><div class="archetype-label">Your Face Archetype</div><div class="archetype-value">' + archetype + '</div></div>';
+    html += '<div class="content">' + readingContent + '</div>';
+    html += '<div class="footer">&#38754;&#30456; MianXiang &middot; Ancient Chinese Face Reading &middot; mianxiang.moonstoneadvisers.com</div>';
+    html += '</body></html>';
+
+    var printWindow = window.open('', '_blank');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    setTimeout(function() { printWindow.print(); }, 800);
+  });
 </script>
 </body>
 </html>
