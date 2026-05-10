@@ -418,6 +418,21 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 2px 12px rgba(61,111,212,0.08);
+      table-layout: fixed;
+    }
+
+    .result-content th:first-child,
+    .result-content td:first-child {
+      width: 38%;
+      font-weight: 700;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .result-content th:last-child,
+    .result-content td:last-child {
+      width: 62%;
+      vertical-align: top;
     }
 
     .result-content th {
@@ -432,9 +447,11 @@
     }
 
     .result-content td {
-      padding: 10px 14px;
+      padding: 12px 14px;
       border-bottom: 1px solid rgba(61,111,212,0.08);
       color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
     }
 
     .result-content tr:last-child td { border-bottom: none; }
@@ -448,6 +465,28 @@
       border-radius: 0 12px 12px 0;
       font-style: italic;
       color: var(--text-light);
+    }
+
+    .btn-download {
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+      border: none;
+      border-radius: 50px;
+      color: var(--white);
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-style: italic;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(26,63,160,0.25);
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26,63,160,0.35);
     }
 
     .btn-reset {
@@ -552,6 +591,7 @@
     <div class="content-card">
       <div class="result-content" id="resultContent"></div>
     </div>
+    <button class="btn-download" id="btnDownload">⬇ &nbsp; Download PDF Reading &nbsp; ⬇</button>
     <button class="btn-reset" id="btnReset">✨ &nbsp; New Reading &nbsp; ✨</button>
   </div>
 
@@ -629,7 +669,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'claude-opus-4-6',
-          max_tokens: 1000,
+          max_tokens: 2000,
           messages: [{
             role: 'user',
             content: [
@@ -686,30 +726,155 @@
   }
 
   function buildPrompt() {
-    return `You are a fun and insightful Chinese face reading (MianXiang 面相) master. Analyze the face in this photo and give a light-hearted, engaging reading that is easy to understand. Keep it casual, warm, and fun — like a wise friend sharing observations over tea. Use some emojis to keep it lively!
+    return `You are an expert Chinese face reading (MianXiang 面相) master with decades of experience. Analyze the face in this photo and provide a detailed, insightful, and engaging reading. Be warm, positive, and encouraging while weaving in genuine MianXiang wisdom. Use emojis to keep it lively and fun!
 
 Structure your response EXACTLY like this:
 
 ## First Impressions ✨
-Write 1 casual, engaging paragraph about the overall energy and vibe of this face. What kind of person does this look like? Keep it warm and fun.
+Write 2-3 sentences about the overall energy, aura, and presence of this face. What is the dominant impression? What kind of person does this face belong to?
 
-## What Your Face Reveals 🌟
-Write 1 paragraph covering the most interesting and notable features — eyes, nose, forehead, jaw — and what they suggest about personality, luck, and life path. Keep it light and positive.
+## The Story of Your Face 🌟
+Write 3-4 sentences doing a detailed walkthrough of the key facial features — forehead, eyes, eyebrows, nose, lips, jaw, cheekbones, ears. For each feature mentioned, explain what it reveals about the person's character, fortune, and destiny. Be specific and insightful.
+
+## Your Elemental Nature 🔥💧🌿
+In 2-3 sentences, identify this person's dominant face element (Wood, Fire, Earth, Metal, or Water) and what this means for their personality and life path.
 
 ## Your Face Reading Summary
 | Feature | Reading |
 |---|---|
-| Wealth Luck | one fun line |
-| Career | one fun line |
-| Relationships | one fun line |
-| Personality | one fun line |
-| Later Life | one fun line |
+| Wealth Luck 💰 | 2-3 sentences about wealth potential, money habits, and financial destiny |
+| Career & Ambition 🚀 | 2-3 sentences about career strengths, ideal roles, and professional destiny |
+| Relationships & Love ❤️ | 2-3 sentences about relationship style, compatibility, and love luck |
+| Personality & Character 🦋 | 2-3 sentences about core personality traits and inner strengths |
+| Health & Vitality 🌿 | 2-3 sentences about health indicators and vitality |
+| Later Life & Legacy 🏡 | 2-3 sentences about later life fortune and lasting legacy |
+
+## Auspicious Timing ⭐
+Write 2 sentences about when this person's luck is strongest — which years or life phases to watch for big opportunities.
 
 ## Your Archetype
-Name their classical face archetype in one line e.g. "The Commander 将星格 ⭐" with a short fun description.
+Name their classical face archetype e.g. "The Commander 将星格 ⭐" and write 2 sentences about what makes this person truly special and what their greatest gift to the world is.
 
-Keep the whole reading SHORT, fun, and upbeat. Think horoscope energy but grounded in real MianXiang principles!`;
+Be detailed, warm, specific, and encouraging. Ground every insight in real MianXiang principles while keeping the tone engaging and accessible.`;
   }
+
+  // PDF Download
+  document.getElementById('btnDownload').addEventListener('click', () => {
+    const archetype = document.getElementById('archetypeDisplay').textContent;
+    const content = document.getElementById('resultContent').innerHTML;
+    const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(\`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>面相 MianXiang Reading</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; color: #1a2540; background: white; padding: 0; }
+  
+  .cover {
+    background: linear-gradient(135deg, #1a3fa0, #3d6fd4, #f0b429);
+    color: white;
+    padding: 60px 48px;
+    text-align: center;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cover-top { font-size: 10px; letter-spacing: 5px; text-transform: uppercase; opacity: 0.8; margin-bottom: 12px; }
+  .cover-chinese { font-family: serif; font-size: 72px; letter-spacing: 12px; margin-bottom: 4px; }
+  .cover-pinyin { font-family: 'Playfair Display', serif; font-size: 18px; font-style: italic; letter-spacing: 4px; opacity: 0.9; margin-bottom: 4px; }
+  .cover-title { font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.75; }
+
+  .meta {
+    background: #f0f4ff;
+    padding: 16px 48px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #4a5a7a;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #e8eeff;
+  }
+
+  .archetype-banner {
+    background: linear-gradient(135deg, #eef2ff, #fffbe6);
+    padding: 24px 48px;
+    text-align: center;
+    border-bottom: 1px solid #e8eeff;
+  }
+
+  .archetype-label { font-size: 10px; letter-spacing: 4px; color: #3d6fd4; text-transform: uppercase; margin-bottom: 6px; }
+  .archetype-value { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #1a3fa0; }
+
+  .content { padding: 32px 48px 48px; }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: #1a3fa0;
+    margin: 28px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #e8eeff;
+  }
+
+  p { font-size: 13px; line-height: 1.8; color: #1a2540; margin-bottom: 12px; }
+  strong { color: #1a3fa0; font-weight: 700; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; table-layout: fixed; }
+  th { background: linear-gradient(135deg, rgba(61,111,212,0.1), rgba(240,180,41,0.06)); color: #1a3fa0; padding: 8px 12px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1.5px solid #dde4ff; }
+  th:first-child, td:first-child { width: 30%; font-weight: 700; vertical-align: top; }
+  th:last-child, td:last-child { width: 70%; vertical-align: top; }
+  td { padding: 10px 12px; border-bottom: 1px solid #eef2ff; line-height: 1.6; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+
+  .footer {
+    background: #1a3fa0;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-top: 32px;
+  }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+  <div class="cover">
+    <div class="cover-top">Ancient Chinese Face Reading</div>
+    <div class="cover-chinese">面相</div>
+    <div class="cover-pinyin">Miàn Xiàng</div>
+    <div class="cover-title">Personal Face Reading Report</div>
+  </div>
+  <div class="meta">
+    <span>Prepared by MianXiang Face Reader</span>
+    <span>Date: \${date}</span>
+    <span>mianxiang.moonstoneadvisers.com</span>
+  </div>
+  <div class="archetype-banner">
+    <div class="archetype-label">Your Face Archetype</div>
+    <div class="archetype-value">\${archetype}</div>
+  </div>
+  <div class="content">\${content}</div>
+  <div class="footer">面相 MianXiang · Ancient Chinese Face Reading · mianxiang.moonstoneadvisers.com</div>
+</body>
+</html>\`);
+    printWindow.document.close();
+    setTimeout(() => { printWindow.print(); }, 800);
+  });
 
   function mdToHTML(t) {
     return t
@@ -740,4 +905,3 @@ Keep the whole reading SHORT, fun, and upbeat. Think horoscope energy but ground
 </script>
 </body>
 </html>
-
