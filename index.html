@@ -846,7 +846,22 @@
       if (data.clientSecret) {
         loading.style.display = 'none';
         var stripe = Stripe(STRIPE_PK);
-        stripe.initEmbeddedCheckout({ clientSecret: data.clientSecret })
+        stripe.initEmbeddedCheckout({
+          clientSecret: data.clientSecret,
+          onComplete: function() {
+            // Payment complete - no redirect needed!
+            if (stripeCheckout) { stripeCheckout.destroy(); stripeCheckout = null; }
+            document.getElementById('stripeModal').classList.remove('visible');
+            paymentVerified = true;
+            hidePriceBox();
+            var b = document.getElementById('successBanner');
+            if (b) b.style.display = 'block';
+            // Trigger analysis automatically
+            if (selectedFile) {
+              setTimeout(function() { analyze(); }, 500);
+            }
+          }
+        })
         .then(function(checkout) {
           stripeCheckout = checkout;
           checkout.mount('#stripe-checkout-container');
