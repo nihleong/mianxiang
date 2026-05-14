@@ -4,54 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>面相 — Face Reader</title>
-  <script src="https://js.stripe.com/v3/">
-  // Show upload instructions after payment verified
-  var origHidePriceBox = hidePriceBox;
-  function hidePriceBox() {
-    var pb = document.getElementById('priceBox');
-    if (pb) pb.style.display = 'none';
-    var ui = document.getElementById('uploadInstructions');
-    if (ui) ui.classList.add('visible');
-    var sb = document.getElementById('successBanner');
-    if (sb) sb.style.display = 'none';
-  }
-
-  // Email capture
-  function submitEmail() {
-    var email = document.getElementById('emailInput').value.trim();
-    if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
-    var ec = document.getElementById('emailCapture');
-    ec.innerHTML = '<div style="font-size:28px;margin-bottom:8px">✅</div><div style="font-family:Playfair Display,serif;font-size:16px;font-weight:700;color:var(--blue-deep)">Thank you!</div><div style="font-size:13px;color:var(--text-light);margin-top:4px">Your reading has been noted. We'll be in touch with offers and updates.</div>';
-    // Here you could POST to a backend to store the email
-    console.log('Email captured:', email);
-  }
-
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
   // Social sharing
   function getShareText() {
     var archetype = document.getElementById('archetypeDisplay').textContent;
     return 'I just got my 面相 MianXiang Face Reading! My archetype is: ' + archetype + ' ✨ Get yours at mianxiang.moonstoneadvisers.com';
   }
-
-  function shareWhatsApp() {
-    var text = encodeURIComponent(getShareText());
-    window.open('https://wa.me/?text=' + text, '_blank');
-  }
-
-  function shareTwitter() {
-    var text = encodeURIComponent(getShareText());
-    window.open('https://twitter.com/intent/tweet?text=' + text, '_blank');
-  }
-
+  function shareWhatsApp() { window.open('https://wa.me/?text=' + encodeURIComponent(getShareText()), '_blank'); }
+  function shareTwitter() { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(getShareText()), '_blank'); }
   function copyLink() {
-    var text = getShareText();
-    navigator.clipboard.writeText(text).then(function() {
-      alert('Copied to clipboard! Share it with your friends 😊');
-    }).catch(function() {
-      prompt('Copy this text:', text);
-    });
+    navigator.clipboard.writeText(getShareText()).then(function() {
+      alert('Copied! Share with your friends 😊');
+    }).catch(function() { prompt('Copy this text:', getShareText()); });
   }
-
-</script>
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
