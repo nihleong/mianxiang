@@ -9,6 +9,8 @@
   // Social sharing
   function getShareText() {
     var archetype = document.getElementById('archetypeDisplay').textContent;
+    // Clean up any markdown symbols
+    archetype = archetype.replace(/[#*_~`]/g, '').replace(/\s+/g, ' ').trim();
     return 'I just got my 面相 MianXiang Face Reading! My archetype is: ' + archetype + ' ✨ Get yours at mianxiang.moonstoneadvisers.com';
   }
   function shareWhatsApp() { window.open('https://wa.me/?text=' + encodeURIComponent(getShareText()), '_blank'); }
@@ -1133,12 +1135,17 @@
     if (confirmed) confirmed.classList.add('visible');
     if (confirmedText) confirmedText.textContent = email + ' saved ✓';
 
-    // Send email to worker
-    fetch('https://billowing-voice-e40bmianxiang-proxy.danny-679.workers.dev/collect-email', {
+    // Send email directly via Web3Forms (client side)
+    fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, app: 'mianxiang' })
-    }).catch(function(e) { console.log('Email collect error:', e); });
+      body: JSON.stringify({
+        access_key: '66ba11a4-7d94-4c57-9145-9fa8b8a11e71',
+        subject: 'New Customer Email — 面相 MianXiang',
+        from_name: 'Moonstone Apps',
+        message: 'App: 面相 MianXiang Face Reader\nCustomer Email: ' + email + '\nTime: ' + new Date().toLocaleString('en-GB', {timeZone:'Asia/Kuala_Lumpur'})
+      })
+    }).then(function(r){return r.json();}).then(function(d){console.log('Email sent:',d);}).catch(function(e){console.log('Email error:',e);});
 
     // Proceed to payment
     document.getElementById('stripeModal').classList.add('visible');
@@ -1198,7 +1205,8 @@
 
       // Extract archetype
       const archetypeMatch = text.match(/## Your Archetype\s*\n([^\n]+)/);
-      const archetype = archetypeMatch ? archetypeMatch[1].trim() : '✨ The Remarkable One';
+      const rawArchetype = archetypeMatch ? archetypeMatch[1].trim() : '✨ The Remarkable One';
+      const archetype = rawArchetype.replace(/[#*_~`]/g, '').replace(/\s+/g, ' ').trim();
 
       loading.classList.remove('visible');
       archetypeDisplay.textContent = archetype;
